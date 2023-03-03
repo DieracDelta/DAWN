@@ -1,9 +1,15 @@
 [package]
 name = "nix-debug-adapter"
-license = "MIT"
+license-file = "LICENSE"
 version = "0.1.0"
 edition = "2021"
 description = "Nix Debug Adapter Implementation (DAP)"
+rust-version = "1.67.1"
+authors = [ "Justin Restivo <justin.p.restivo@gmail.com>" ]
+readme = "README.md"
+repository = "https://github.com/DieracDelta/nix-debug-adapter"
+keywords = ["nix", "dap", "debugger", "adapter"]
+categories = ["development-tools::debugging"]
 
 [dependencies]
 tokio = "1.26.0"
