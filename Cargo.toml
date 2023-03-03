@@ -10,6 +10,7 @@ readme = "README.md"
 repository = "https://github.com/DieracDelta/nix-debug-adapter"
 keywords = ["nix", "dap", "debugger", "adapter"]
 categories = ["development-tools::debugging"]
+exclude = ["target_dirs", ".github"]
 
 [dependencies]
 tokio = "1.26.0"
