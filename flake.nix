@@ -1,5 +1,5 @@
 {
-  description = "Riscv ASM Tree-sitter grammar";
+  description = "Nix Debug Adapter Implementation (DAP)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
