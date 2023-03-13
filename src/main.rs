@@ -8,7 +8,6 @@ use tracing::error;
 pub mod codec;
 pub mod debugger;
 pub mod nix_debugger;
-pub mod service;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
