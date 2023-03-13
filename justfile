@@ -21,4 +21,7 @@ fmt:
   cargo fmt
 
 fix:
-  cargo fix --allow-unstaged --allow-staged
+  cargo fix --allow-dirty --allow-staged
+
+doc:
+  cargo doc --workspace --open
