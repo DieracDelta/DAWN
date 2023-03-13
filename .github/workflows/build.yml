@@ -22,4 +22,4 @@ jobs:
         name: jrestivo
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: |
-        nix develop .#ciShell -c "just"
+        nix develop -c "just"
