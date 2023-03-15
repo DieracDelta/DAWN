@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use debug_types::{
-    requests::InitializeRequestArguments,
+    events::EventBody,
+    requests::{InitializeRequestArguments, LaunchRequestArguments},
     responses::{InitializeResponse, Response, ResponseBody},
     types::Capabilities,
 };
@@ -14,6 +15,8 @@ impl DebugAdapter for NixDebugAdapter {
         use debug_types::requests::RequestCommand::*;
         match command {
             Initialize(initialize_args) => self.handle_initialize(seq, initialize_args).await,
+            ConfigurationDone => self.handle_configuration_done(seq).await,
+            Launch(launch_args) => self.handle_launch(seq, launch_args).await,
             _ => {
                 self.client
                     .send(Either::Right(Response {
@@ -32,11 +35,8 @@ impl NixDebugAdapter {
     async fn handle_initialize(&mut self, seq: i64, _args: InitializeRequestArguments) {
         let capabilities = Capabilities {
             supports_configuration_done_request: Some(true),
-            supports_step_in_targets_request: Some(true),
             support_terminate_debuggee: Some(true),
             supports_loaded_sources_request: Some(true),
-            supports_data_breakpoints: Some(true),
-            supports_breakpoint_locations_request: Some(true),
             ..default_capabilities()
         };
 
@@ -54,6 +54,28 @@ impl NixDebugAdapter {
             .await;
 
         self.client.set_state(State::Initialized);
+
+        // per spec, send initialized event
+        // after responding with capabilities
+        self.client
+            .send(Either::Left(EventBody::Initialized {}))
+            .await;
+    }
+
+    async fn handle_configuration_done(&mut self, seq: i64) {
+        let body = Some(ResponseBody::ConfigurationDone);
+        self.client
+            .send(Either::Right(Response {
+                request_seq: seq,
+                success: true,
+                message: None,
+                body,
+            }))
+            .await;
+    }
+
+    async fn handle_launch(&mut self, _seq: i64, args: LaunchRequestArguments) {
+        unimplemented!("Unimplemented handle launch! {:?}", args);
     }
 }
 
