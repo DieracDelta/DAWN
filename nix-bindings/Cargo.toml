@@ -1,0 +1,18 @@
+[package]
+name = "nix-bindings"
+license-file = "LICENSE"
+version = "0.1.0"
+edition = "2021"
+description = "Nix library bindings"
+rust-version = "1.67.1"
+authors = [ "Justin Restivo <justin.p.restivo@gmail.com>" ]
+readme = "README.md"
+repository = "https://github.com/DieracDelta/nix-debug-adapter"
+keywords = ["nix", "bindings", "cpp", "cxx"]
+# TDOO this is wrong
+categories = ["development-tools::debugging"]
+exclude = ["target_dirs", ".github"]
+
+[dependencies]
+autocxx = "0.25.0"
+

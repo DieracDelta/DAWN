@@ -1,45 +1,10 @@
-[package]
-name = "nix-debug-adapter"
-license-file = "LICENSE"
-version = "0.1.0"
-edition = "2021"
-description = "Nix Debug Adapter Implementation (DAP)"
-rust-version = "1.67.1"
-authors = [ "Justin Restivo <justin.p.restivo@gmail.com>" ]
-readme = "README.md"
-repository = "https://github.com/DieracDelta/nix-debug-adapter"
-keywords = ["nix", "dap", "debugger", "adapter"]
-categories = ["development-tools::debugging"]
-exclude = ["target_dirs", ".github"]
-
-[dependencies]
-tokio = {version = "1.26.0", default-features = false, features = [ "full" ] }
-tracing = "0.1.37"
-tracing-subscriber = "0.3.16"
-snafu = "0.7.4"
-debug_types = "1.0.0"
-# clarity-repl = { git = "https://github.com/DieracDelta/clarinet.git", branch = "jr/public_dap_mod" }
-tokio-util = { version = "0.7.7", features = ["codec"]}
-futures = { version = "0.3.26"}
-async-trait = "0.1.65"
-
-
-serde = { version = "1.0", features = ["derive"] }
-serde_json = { version = "1.0.47", features = ["unbounded_depth"] }
-bytes = { version = "1.4.0"}
-memchr = { version = "2.5.0"}
-httparse = { version = "1.8.0"}
-nll = { git = "https://github.com/EspressoSystems/nll" }
-futures-util = { version = "0.3.26"}
-either = "1.8.1"
-
-tower-lsp = { version = "0.19.0" }
-tower-service = "0.3.2"
-
-atomic_enum = "0.2.0"
-
-autocxx = "0.25.0"
-
+[workspace]
+members = [
+        "nix-bindings",
+        "nix-debug-adapter",
+        "dap-server",
+]
 
 [profile.release]
 incremental = true
+

@@ -152,6 +152,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "dap-server"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "atomic_enum",
+ "bytes",
+ "debug_types",
+ "either",
+ "futures",
+ "futures-util",
+ "httparse",
+ "memchr",
+ "nll",
+ "serde",
+ "serde_json",
+ "snafu",
+ "tokio",
+ "tokio-util",
+ "tower-lsp",
+ "tower-service",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "dashmap"
 version = "5.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -438,13 +463,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix-bindings"
+version = "0.1.0"
+dependencies = [
+ "autocxx",
+]
+
+[[package]]
 name = "nix-debug-adapter"
 version = "0.1.0"
 dependencies = [
  "async-trait",
  "atomic_enum",
- "autocxx",
  "bytes",
+ "dap-server",
  "debug_types",
  "either",
  "futures",

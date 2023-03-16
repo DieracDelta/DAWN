@@ -1,12 +1,10 @@
-use codec::DebugAdapterCodec;
+use dap_server::codec::DebugAdapterCodec;
+use dap_server::debugger::{Client, DebugAdapter};
 use debug_types::ProtocolMessage;
-use debugger::{Client, DebugAdapter};
 use nix_debugger::{NixDebugAdapter, NixDebugState};
 // use debugger::{APState};
 use tokio_util::codec::{FramedRead, FramedWrite};
 use tracing::error;
-pub mod codec;
-pub mod debugger;
 pub mod nix_debugger;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]

@@ -7,7 +7,7 @@ use debug_types::{
 };
 use either::Either;
 
-use crate::debugger::{Client, DebugAdapter, State};
+use dap_server::debugger::{Client, DebugAdapter, State};
 
 #[async_trait]
 impl DebugAdapter for NixDebugAdapter {
