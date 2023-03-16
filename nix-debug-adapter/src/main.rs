@@ -1,10 +1,21 @@
+#![warn(
+    clippy::all,
+    clippy::pedantic,
+    rust_2018_idioms,
+    missing_docs,
+    clippy::missing_docs_in_private_items,
+    clippy::panic
+)]
+#![allow(clippy::unused_async, clippy::module_name_repetitions)]
+//! debugger
+
 use dap_server::codec::DebugAdapterCodec;
 use dap_server::debugger::{Client, DebugAdapter};
 use debug_types::ProtocolMessage;
 use nix_debugger::{NixDebugAdapter, NixDebugState};
-// use debugger::{APState};
 use tokio_util::codec::{FramedRead, FramedWrite};
 use tracing::error;
+///! debugger
 pub mod nix_debugger;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
@@ -26,40 +37,15 @@ async fn main() {
     };
 
     loop {
+        use debug_types::MessageKind::{Event, Request, Response};
         let msg = debugger.client.next_msg().await;
-        use debug_types::MessageKind::*;
         match msg.message {
             Request(request) => debugger.handle_request(msg.seq, request).await,
             Response(response) => {
-                error!("Received response {response:?}. Shouldn't be possible!")
+                error!("Received response {response:?}. Shouldn't be possible!");
             }
             Event(e) => error!("Received event {e:?}. Shouldn't be possible!"),
         }
         // debugger.handle_msg(msg).await;
     }
-    //     error!("received message {:?}", msg);
-    //     match msg {
-    //         Ok(msg) => {
-    //             use debug_types::MessageKind::*;
-    //             let requires_followup =
-    //                 match msg.message {
-    //                     Request(command) => {
-    //                         self.handle_request(msg.seq, command).await
-    //                     }
-    //                     Response(response) => {
-    //                         self.handle_response(msg.seq, response).await;
-    //                         false
-    //                     }
-    //                     Event(event) => {
-    //                         self.handle_event(msg.seq, event).await;
-    //                         false
-    //                     }
-    //                 };
-    //             return Ok(requires_followup);
-    //         }
-    //         Err(e) => return Err(e),
-    //     }
-
-    // let mut debugger = Debugger::<DebuggerState>::new(reader, writer).await;
-    // debugger.init().await.unwrap();
 }

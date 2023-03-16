@@ -8,11 +8,11 @@ use debug_types::{
 use either::Either;
 
 use dap_server::debugger::{Client, DebugAdapter, State};
+use debug_types::requests::RequestCommand::{ConfigurationDone, Initialize, Launch};
 
 #[async_trait]
 impl DebugAdapter for NixDebugAdapter {
     async fn handle_request(&mut self, seq: i64, command: debug_types::requests::RequestCommand) {
-        use debug_types::requests::RequestCommand::*;
         match command {
             Initialize(initialize_args) => self.handle_initialize(seq, initialize_args).await,
             ConfigurationDone => self.handle_configuration_done(seq).await,
@@ -32,6 +32,7 @@ impl DebugAdapter for NixDebugAdapter {
 }
 
 impl NixDebugAdapter {
+    /// handler for receipt of initialize event from client
     async fn handle_initialize(&mut self, seq: i64, _args: InitializeRequestArguments) {
         let capabilities = Capabilities {
             supports_configuration_done_request: Some(true),
@@ -62,6 +63,7 @@ impl NixDebugAdapter {
             .await;
     }
 
+    /// handler for receipt of configurationDone event from client
     async fn handle_configuration_done(&mut self, seq: i64) {
         let body = Some(ResponseBody::ConfigurationDone);
         self.client
@@ -74,20 +76,27 @@ impl NixDebugAdapter {
             .await;
     }
 
+    /// handler for receipt of launch event from client
     async fn handle_launch(&mut self, _seq: i64, args: LaunchRequestArguments) {
         unimplemented!("Unimplemented handle launch! {:?}", args);
     }
 }
 
+/// overarching struct holding dap state and comms
 pub struct NixDebugAdapter {
+    /// the comms
     pub client: Client,
+    /// the state
     pub state: NixDebugState,
 }
 
+/// the debug state
 #[derive(Default, Debug, Clone)]
 pub struct NixDebugState {}
 
 // FIXME why does capabilities not implement default?
+/// "sane" capabilities: disable everything!
+#[must_use]
 pub fn default_capabilities() -> Capabilities {
     Capabilities {
         supports_configuration_done_request: None,

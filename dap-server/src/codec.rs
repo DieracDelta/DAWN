@@ -1,6 +1,6 @@
 //! Encoder and decoder for Debug Adapter Protocol messages.
-//! Directly copied from https://github.com/hirosystems/clarinet/blob/develop/components/clarity-repl/src/repl/debug/dap/mod.rs
-//! which appears to be copied from https://github.com/ebkalderon/tower-lsp/blob/32345203a8bfcd16349371220ec64482b670abac/src/codec.rs
+//! Directly copied from <https://github.com/hirosystems/clarinet/blob/develop/components/clarity-repl/src/repl/debug/dap/mod.rs>
+//! which appears to be copied from <https://github.com/ebkalderon/tower-lsp/blob/32345203a8bfcd16349371220ec64482b670abac/src/codec.rs>
 //! I'm trying to avoid pulling in dependencies, so dropping this in here
 
 use std::error::Error;
@@ -37,19 +37,19 @@ pub enum ParseError {
 }
 
 impl Display for ParseError {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match *self {
-            ParseError::Body(ref e) => write!(f, "unable to parse JSON body: {}", e),
-            ParseError::Encode(ref e) => write!(f, "failed to encode response: {}", e),
-            ParseError::Headers(ref e) => write!(f, "failed to parse headers: {}", e),
+            ParseError::Body(ref e) => write!(f, "unable to parse JSON body: {e}"),
+            ParseError::Encode(ref e) => write!(f, "failed to encode response: {e}"),
+            ParseError::Headers(ref e) => write!(f, "failed to parse headers: {e}"),
             ParseError::InvalidContentType => write!(f, "unable to parse content type"),
             ParseError::InvalidContentLength(ref e) => {
-                write!(f, "unable to parse content length: {}", e)
+                write!(f, "unable to parse content length: {e}")
             }
             ParseError::MissingContentLength => {
                 write!(f, "missing required `Content-Length` header")
             }
-            ParseError::Utf8(ref e) => write!(f, "request contains invalid UTF8: {}", e),
+            ParseError::Utf8(ref e) => write!(f, "request contains invalid UTF8: {e}"),
         }
     }
 }
@@ -98,7 +98,9 @@ impl From<Utf8Error> for ParseError {
 
 /// Encodes and decodes Language Server Protocol messages.
 pub struct DebugAdapterCodec<T> {
+    /// len
     content_len: Option<usize>,
+    /// typecheck
     _marker: PhantomData<T>,
 }
 
@@ -129,6 +131,7 @@ impl<T: Serialize> Encoder<T> for DebugAdapterCodec<T> {
     }
 }
 
+/// number of digits
 #[inline]
 fn number_of_digits(mut n: usize) -> usize {
     let mut num_digits = 0;
@@ -197,6 +200,7 @@ impl<T: DeserializeOwned> Decoder for DebugAdapterCodec<T> {
     }
 }
 
+/// decode headers
 fn decode_headers(headers: &[httparse::Header<'_>]) -> Result<usize, ParseError> {
     let mut content_len = None;
 
@@ -212,11 +216,11 @@ fn decode_headers(headers: &[httparse::Header<'_>]) -> Result<usize, ParseError>
                 let charset = string
                     .split(';')
                     .skip(1)
-                    .map(|param| param.trim())
+                    .map(str::trim)
                     .find_map(|param| param.strip_prefix("charset="));
 
                 match charset {
-                    Some("utf-8") | Some("utf8") => {}
+                    Some("utf-8" | "utf8") => {}
                     _ => return Err(ParseError::InvalidContentType),
                 }
             }
@@ -242,14 +246,14 @@ mod tests {
         ($expression:expr, $($pattern:tt)+) => {
             match $expression {
                 $($pattern)+ => (),
-                ref e => panic!("expected `{}` but got `{:?}`", stringify!($($pattern)+), e),
+                ref e => panic!("expected `{}` but got `{e:?}`", stringify!($($pattern)+)),
             }
         }
     }
 
     fn encode_message(content_type: Option<&str>, message: &str) -> String {
         let content_type = content_type
-            .map(|ty| format!("\r\nContent-Type: {}", ty))
+            .map(|ty| format!("\r\nContent-Type: {ty}"))
             .unwrap_or_default();
 
         format!(
@@ -339,7 +343,7 @@ mod tests {
     fn recovers_from_parse_error() {
         let decoded = r#"{"jsonrpc":"2.0","method":"exit"}"#;
         let encoded = encode_message(None, decoded);
-        let mixed = format!("foobar{}Content-Length: foobar\r\n\r\n{}", encoded, encoded);
+        let mixed = format!("foobar{encoded}Content-Length: foobar\r\n\r\n{encoded}");
 
         let mut codec = DebugAdapterCodec::default();
         let mut buffer = BytesMut::from(mixed.as_str());

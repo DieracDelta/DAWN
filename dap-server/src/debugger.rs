@@ -9,6 +9,7 @@ use debug_types::{
     MessageKind, ProtocolMessage,
 };
 use futures::{SinkExt, StreamExt};
+use std::sync::atomic::Ordering::Relaxed;
 use tokio_util::codec::{FramedRead, FramedWrite};
 
 use either::Either;
@@ -17,6 +18,9 @@ use tracing::error;
 use crate::codec::DebugAdapterCodec;
 
 /// A list of possible states the adapter can be in.
+/// NOTE: the atomic version of this (which we intend to use!)
+/// is backed by a usize
+/// and is denoted `AtomicState`
 #[atomic_enum]
 #[derive(PartialEq, PartialOrd)]
 pub enum State {
@@ -32,36 +36,64 @@ pub enum State {
     Exited = 4,
 }
 
+/// Struct used to abstract away communication with client
+/// TODO rename to something a bit more intuitive
 pub struct Client {
-    state: State,
+    /// which state we're on
+    state: AtomicState,
+    /// the sequence number we're on
     send_seq: i64,
+    /// reader for stdin
     reader: FramedRead<Stdin, DebugAdapterCodec<ProtocolMessage>>,
+    /// reader for stdout
     writer: FramedWrite<Stdout, DebugAdapterCodec<ProtocolMessage>>,
 }
 
 impl Client {
+    /// create new client
+    #[must_use]
     pub fn new(
         reader: FramedRead<Stdin, DebugAdapterCodec<ProtocolMessage>>,
         writer: FramedWrite<Stdout, DebugAdapterCodec<ProtocolMessage>>,
     ) -> Self {
         Self {
-            state: State::Uninitialized,
+            state: State::Uninitialized.into(),
             send_seq: 0,
             reader,
             writer,
         }
     }
 
-    pub fn set_state(&mut self, state: State) {
-        if state > self.state {
-            self.state = state;
-        } else {
-            error!("regressed somehow from {:?} to {:?}", self.state, state)
+    /// modify the underlying state
+    /// Note: we expect to ONLY EVER INCREMENT BY ONE
+    /// and this code is designed to do that.
+    /// # Panics
+    /// - if the swap is not what's expected
+    /// - if `compare_exchange` somehow doesn't do what's expeected in the success case
+    pub fn set_state(&mut self, new_state: State) {
+        if new_state == State::Uninitialized {
+            error!("Not setting state. Only can progress forward");
+        }
+        let current_state: State = AtomicState::from_usize(new_state as usize - 1);
+
+        let result = self
+            .state
+            .compare_exchange(current_state, new_state, Relaxed, Relaxed);
+
+        match result {
+            Ok(viewed_state) => {
+                assert!(viewed_state == current_state);
+            }
+            Err(viewed_state) => {
+                error!("Failed to set state! Old state was {viewed_state:?}, but we expected {current_state:?}");
+            }
         }
     }
 
+    /// get the underlying state
+    #[must_use]
     pub fn get_state(&self) -> State {
-        self.state
+        self.state.load(Relaxed)
     }
 
     /// send event to client (only possible way)
@@ -85,6 +117,7 @@ impl Client {
         self.send_seq += 1;
     }
 
+    /// request next message of substance from client
     pub async fn next_msg(&mut self) -> ProtocolMessage {
         loop {
             if let Some(msg) = self.reader.next().await {
@@ -101,7 +134,9 @@ impl Client {
     }
 }
 
+/// a debug adapter mt
 #[async_trait]
 pub trait DebugAdapter {
+    /// how to handle various requests
     async fn handle_request(&mut self, seq: i64, command: RequestCommand);
 }
