@@ -1,14 +1,20 @@
 use async_trait::async_trait;
 use debug_types::{
     events::EventBody,
-    requests::{InitializeRequestArguments, LaunchRequestArguments},
-    responses::{InitializeResponse, Response, ResponseBody},
-    types::Capabilities,
+    requests::{
+        BreakpointLocationsArguments, InitializeRequestArguments, LaunchRequestArguments,
+        SetBreakpointsArguments,
+    },
+    responses::{BreakpointLocationsResponse, InitializeResponse, Response, ResponseBody},
+    types::{BreakpointLocation, Capabilities},
 };
 use either::Either;
 
 use dap_server::debugger::{Client, DebugAdapter, State};
-use debug_types::requests::RequestCommand::{ConfigurationDone, Initialize, Launch};
+use debug_types::requests::RequestCommand::{
+    BreakpointLocations, ConfigurationDone, Disconnect, Initialize, Launch,
+};
+use nll::nll_todo::nll_todo;
 
 #[async_trait]
 impl DebugAdapter for NixDebugAdapter {
@@ -17,6 +23,11 @@ impl DebugAdapter for NixDebugAdapter {
             Initialize(initialize_args) => self.handle_initialize(seq, initialize_args).await,
             ConfigurationDone => self.handle_configuration_done(seq).await,
             Launch(launch_args) => self.handle_launch(seq, launch_args).await,
+            Disconnect(disconnect_args) => self.handle_disconnect(seq, disconnect_args).await,
+            BreakpointLocations(breakpoint_locations_args) => {
+                self.handle_breakpoint_locations(seq, breakpoint_locations_args)
+                    .await
+            }
             _ => {
                 self.client
                     .send(Either::Right(Response {
@@ -38,6 +49,7 @@ impl NixDebugAdapter {
             supports_configuration_done_request: Some(true),
             support_terminate_debuggee: Some(true),
             supports_loaded_sources_request: Some(true),
+            supports_breakpoint_locations_request: Some(true),
             ..default_capabilities()
         };
 
@@ -79,6 +91,50 @@ impl NixDebugAdapter {
     /// handler for receipt of launch event from client
     async fn handle_launch(&mut self, _seq: i64, args: LaunchRequestArguments) {
         unimplemented!("Unimplemented handle launch! {:?}", args);
+    }
+
+    async fn handle_disconnect(
+        &mut self,
+        seq: i64,
+        _disconnect_args: debug_types::requests::DisconnectArguments,
+    ) {
+        // blindly disconnect always
+        self.client.set_state(State::ShutDown);
+        let body = Some(ResponseBody::Disconnect);
+        self.client
+            .send(Either::Right(Response {
+                request_seq: seq,
+                success: true,
+                message: None,
+                body,
+            }))
+            .await;
+    }
+
+    async fn handle_breakpoint_locations(
+        &mut self,
+        seq: i64,
+        breakpoint_locations_args: BreakpointLocationsArguments,
+    ) {
+        let body = Some(ResponseBody::BreakpointLocations(
+            BreakpointLocationsResponse {
+                breakpoints: vec![BreakpointLocation {
+                    line: nll_todo(),
+                    column: nll_todo(),
+                    end_line: nll_todo(),
+                    end_column: nll_todo(),
+                }],
+            },
+        ));
+        // self.client
+        // .send(Either::Right(Response {
+        //     request_seq: seq,
+        //     success: true,
+        //     message: None,
+        //     body,
+        // }))
+        // .await;
+        nll_todo()
     }
 }
 

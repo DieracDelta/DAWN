@@ -7,10 +7,10 @@
     clippy::panic
 )]
 #![allow(clippy::unused_async, clippy::module_name_repetitions)]
-//! debugger
+//! nix debugger implementation
 
 use dap_server::codec::DebugAdapterCodec;
-use dap_server::debugger::{Client, DebugAdapter};
+use dap_server::debugger::{Client, DebugAdapter, State};
 use debug_types::ProtocolMessage;
 use nix_debugger::{NixDebugAdapter, NixDebugState};
 use tokio_util::codec::{FramedRead, FramedWrite};
@@ -36,7 +36,7 @@ async fn main() {
         state: NixDebugState::default(),
     };
 
-    loop {
+    while debugger.client.get_state() < State::ShutDown {
         use debug_types::MessageKind::{Event, Request, Response};
         let msg = debugger.client.next_msg().await;
         match msg.message {

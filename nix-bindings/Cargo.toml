@@ -15,4 +15,9 @@ exclude = ["target_dirs", ".github"]
 
 [dependencies]
 autocxx = "0.25.0"
+cxx = "1.0.93"
+
+[build-dependencies]
+autocxx-build = "0.25.0"
+miette = { version = "5.6.0", features = ["fancy"] }
 
