@@ -104,6 +104,16 @@
                 mdbook
                 nodejs_latest
                 cargo-expand
+                boost
+                boehmgc.dev
+                brotli.dev
+                libsodium.dev
+                editline.dev
+                curl.dev
+                sqlite.dev
+                libarchive.dev
+                openssl.dev
+
               ] ++
               pkgs.lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.Security pkgs.libiconv darwin.apple_sdk.frameworks.SystemConfiguration ];
           };

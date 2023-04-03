@@ -1,20 +1,21 @@
-use autocxx::prelude::*;
-
-include_cpp! {
-    #include "hello.hpp"
-    safety!(unsafe)
-    generate!("hello")
-}
-
-pub fn call_hello() {
-    println!("...and the result is: {:?}", ffi::hello())
-}
-
-pub mod test {
-    use crate::call_hello;
-
-    #[test]
-    fn test_hello() {
-        call_hello()
-    }
-}
+// use autocxx::prelude::*;
+//
+// include_cpp! {
+//     #include "util.hh"
+//     safety!(unsafe)
+//     generate!("getEnv")
+// }
+//
+// pub fn get_env() {
+//     let env = ffi::getEnv(&"hi");
+//     println!("getthing the env: {:?}", env);
+// }
+//
+// pub mod test {
+//     use crate::get_env;
+//
+//     #[test]
+//     fn test_hello() {
+//         get_env()
+//     }
+// }
