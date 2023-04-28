@@ -3,7 +3,6 @@ use debug_types::{
     events::EventBody,
     requests::{
         BreakpointLocationsArguments, InitializeRequestArguments, LaunchRequestArguments,
-        SetBreakpointsArguments,
     },
     responses::{BreakpointLocationsResponse, InitializeResponse, Response, ResponseBody},
     types::{BreakpointLocation, Capabilities},
@@ -15,6 +14,7 @@ use debug_types::requests::RequestCommand::{
     BreakpointLocations, ConfigurationDone, Disconnect, Initialize, Launch,
 };
 use nll::nll_todo::nll_todo;
+use tracing::error;
 
 #[async_trait]
 impl DebugAdapter for NixDebugAdapter {
@@ -26,7 +26,7 @@ impl DebugAdapter for NixDebugAdapter {
             Disconnect(disconnect_args) => self.handle_disconnect(seq, disconnect_args).await,
             BreakpointLocations(breakpoint_locations_args) => {
                 self.handle_breakpoint_locations(seq, breakpoint_locations_args)
-                    .await
+                    .await;
             }
             _ => {
                 self.client
@@ -56,6 +56,7 @@ impl NixDebugAdapter {
         let response = InitializeResponse { capabilities };
 
         let body = Some(ResponseBody::Initialize(response));
+        self.client.set_state(State::Initializing);
 
         self.client
             .send(Either::Right(Response {
@@ -66,7 +67,9 @@ impl NixDebugAdapter {
             }))
             .await;
 
+        error!("HELLO WORLD 1!!");
         self.client.set_state(State::Initialized);
+        error!("HELLO WORLD!!");
 
         // per spec, send initialized event
         // after responding with capabilities
@@ -89,10 +92,50 @@ impl NixDebugAdapter {
     }
 
     /// handler for receipt of launch event from client
-    async fn handle_launch(&mut self, _seq: i64, args: LaunchRequestArguments) {
-        unimplemented!("Unimplemented handle launch! {:?}", args);
+    async fn handle_launch(&mut self, seq: i64, args: LaunchRequestArguments) {
+        let Some(root_file) = args.manifest else {
+            self.client
+                .send(Either::Right(Response {
+                request_seq: seq,
+                success: false,
+                message: Some("Root file must be specified".to_string()),
+                body: None,
+            })).await;
+            return;
+
+        };
+        // TODO open the file.
+
+        // TODO check that this attribute exists
+        let Some(flake_attribute) = args.expression else {
+            self.client
+                .send(Either::Right(Response {
+                request_seq: seq,
+                success: false,
+                message: Some("Attribute must be specified".to_string()),
+                body: None,
+            })).await;
+            return;
+        };
+
+
+
+
+        // error!("launch args: {args:?}");
+        // TODO some argument checking I think
+        self.client.send(
+            Either::Right(
+                Response {
+                    request_seq: seq,
+                    success: true,
+                    message: None,
+                    body: Some(ResponseBody::Launch),
+                }
+            )).await;
     }
 
+    /// handle disconnect request
+    /// terminates the debugger!
     async fn handle_disconnect(
         &mut self,
         seq: i64,
@@ -111,12 +154,21 @@ impl NixDebugAdapter {
             .await;
     }
 
+    /// handle breapoint locataion request
     async fn handle_breakpoint_locations(
         &mut self,
-        seq: i64,
-        breakpoint_locations_args: BreakpointLocationsArguments,
+        _seq: i64,
+        // BreakpointLocationsArguments {
+        //     source,
+        //     line,
+        //     column,
+        //     end_line,
+        //     end_column,
+        // }: BreakpointLocationsArguments,
+        bruh: BreakpointLocationsArguments,
     ) {
-        let body = Some(ResponseBody::BreakpointLocations(
+        error!("{:?}", bruh);
+        let _body = Some(ResponseBody::BreakpointLocations(
             BreakpointLocationsResponse {
                 breakpoints: vec![BreakpointLocation {
                     line: nll_todo(),
@@ -126,6 +178,7 @@ impl NixDebugAdapter {
                 }],
             },
         ));
+        nll_todo()
         // self.client
         // .send(Either::Right(Response {
         //     request_seq: seq,
@@ -134,7 +187,6 @@ impl NixDebugAdapter {
         //     body,
         // }))
         // .await;
-        nll_todo()
     }
 }
 
@@ -148,7 +200,9 @@ pub struct NixDebugAdapter {
 
 /// the debug state
 #[derive(Default, Debug, Clone)]
-pub struct NixDebugState {}
+pub struct NixDebugState {
+    // root_file: std::io
+}
 
 // FIXME why does capabilities not implement default?
 /// "sane" capabilities: disable everything!

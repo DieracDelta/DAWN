@@ -113,7 +113,11 @@
                 sqlite.dev
                 libarchive.dev
                 openssl.dev
-
+                libsodium
+                boost
+                # the following two packages are duplicates ig
+                # llvmPackages_latest.clang
+                # llvmPackages_latest.libstdcxxClang
               ] ++
               pkgs.lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.Security pkgs.libiconv darwin.apple_sdk.frameworks.SystemConfiguration ];
           };

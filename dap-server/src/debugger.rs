@@ -71,18 +71,22 @@ impl Client {
     /// - if the swap is not what's expected
     /// - if `compare_exchange` somehow doesn't do what's expeected in the success case
     pub fn set_state(&mut self, new_state: State) {
+        // prevent overflow
         if new_state == State::Uninitialized {
             error!("Not setting state. Only can progress forward");
         }
         let current_state: State = AtomicState::from_usize(new_state as usize - 1);
 
+        error!("SETTING TO {new_state:?}");
         let result = self
             .state
             .compare_exchange(current_state, new_state, Relaxed, Relaxed);
+        error!("SET TO {new_state:?}");
 
         match result {
             Ok(viewed_state) => {
                 assert!(viewed_state == current_state);
+                error!("Successfully set state to {new_state:?}");
             }
             Err(viewed_state) => {
                 error!("Failed to set state! Old state was {viewed_state:?}, but we expected {current_state:?}");
@@ -95,6 +99,9 @@ impl Client {
     pub fn get_state(&self) -> State {
         self.state.load(Relaxed)
     }
+
+
+    // TODO get send_response and send_event
 
     /// send event to client (only possible way)
     pub async fn send(&mut self, body: Either<EventBody, Response>) {
@@ -114,6 +121,7 @@ impl Client {
             // TODO should this be panic?
             error!("Error sending response{e}");
         }
+
         self.send_seq += 1;
     }
 
