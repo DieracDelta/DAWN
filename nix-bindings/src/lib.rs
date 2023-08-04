@@ -1,21 +1,15 @@
-use autocxx::prelude::*;
+pub struct Context {}
 
-include_cpp! {
-    #include "util.hh"
-    safety!(unsafe)
-    generate!("getEnv")
+#[no_mangle]
+pub extern "C" fn initialize_plugin() -> *mut Context {
+    Box::into_raw(Box::new(Context {}))
 }
 
-pub fn get_env() {
-    let env = ffi::getEnv(&"hi");
-    println!("getthing the env: {:?}", env);
-}
+/// SAFETY:
+/// The invariant that "cx" is exclusively available here is maintained by the
+/// other side of the FFI. Beware.
+#[no_mangle]
+pub extern "C" fn deinitialize_plugin(cx: &mut Context) {
+    println!("HELLO WORLD FROM RUST!\n");
 
-pub mod test {
-    use crate::get_env;
-
-    #[test]
-    fn test_hello() {
-        get_env()
-    }
 }

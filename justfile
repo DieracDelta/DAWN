@@ -4,6 +4,10 @@ build:
   echo Building nix dap adapter..
   cargo build --release --workspace --examples --bins --tests
 
+build_bindings:
+  echo Building nix dap adapter..
+  cargo build --release --package nix-bindings
+
 test:
   echo Testing nix dap adapter...
   cargo test --release --workspace -- --nocapture --test-threads=1

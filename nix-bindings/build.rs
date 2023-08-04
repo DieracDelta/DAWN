@@ -1,39 +1,92 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, env};
+
+extern crate cbindgen;
+
+trait AddPkg {
+    fn add_pkg_config(&mut self, pkg: pkg_config::Library) -> &mut Self;
+}
+impl AddPkg for cc::Build {
+    fn add_pkg_config(&mut self, pkg: pkg_config::Library) -> &mut Self {
+        for p in pkg.include_paths.into_iter() {
+            self.flag("-isystem").flag(p.to_str().unwrap());
+        }
+        for p in pkg.link_paths.into_iter() {
+            self.flag(&format!("-L{:?}", p));
+        }
+        for p in pkg.libs.into_iter() {
+            self.flag(&format!("-l{}", p));
+        }
+        self
+    }
+}
 
 fn main() -> miette::Result<()> {
-    let include_paths_raw = [
-        ("/Users/jrestivo/dev/nix", "nvmlol"),
-        // ("/Users/jrestivo/dev/nix/src/libcmd/", "cmd"),
-        // ("/Users/jrestivo/dev/nix/src/libexpr/", "expr"),
-        // ("/Users/jrestivo/dev/nix/src/libfetchers/", "fetchers"),
-        // ("/Users/jrestivo/dev/nix/src/libmain/", "main"),
-        // ("/Users/jrestivo/dev/nix/src/libstore/", "store"),
-        ("/Users/jrestivo/dev/nix/src/libutil/", "util"),
-    ];
+    let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
 
-    let mut include_paths : Vec<PathBuf> = include_paths_raw.into_iter().map(|path| {
-        std::path::PathBuf::from(path.0)
-    }).collect();
+    cbindgen::Builder::new()
+        .with_crate(crate_dir)
+        .generate()
+        .expect("Unable to generate bindings")
+        .write_to_file("nix_dap_plugin.h");
 
-    // include_paths.push(PathBuf::from("/Users/jrestivo/dev/nix-debug-adapter/result-dev/include/llvm"));
-    // include_paths.push(PathBuf::from("/Users/jrestivo/dev/nix-debug-adapter/result-dev/include/llvm-c"));
-    // include_paths.push(PathBuf::from("/Users/jrestivo/dev/nix-debug-adapter/result-dev/include/polly"));
-    // NOTE this comes from nix build nixpkgs#legacyPackages.aarch64-darwin.llvmPackages_latest.clang
-    // include_paths.push(PathBuf::from("/Users/jrestivo/dev/nix-debug-adapter/result/resource-root/include"));
-    include_paths.push(PathBuf::from("/nix/store/3n7ppmdrx2qwb4x5afn2fs18im31fvfv-clang-14.0.6-lib/lib/clang/14.0.6/include"));
+    println!("cargo:rerun-if-changed=plugin.cpp");
 
+    let nix_expr = pkg_config::Config::new()
+        .atleast_version("2.1.1")
+        .probe("nix-expr")
+        .unwrap();
+    let nix_store = pkg_config::Config::new()
+        .atleast_version("2.1.1")
+        .probe("nix-store")
+        .unwrap();
+    let nix_main = pkg_config::Config::new()
+        .atleast_version("2.1.1")
+        .probe("nix-main")
+        .unwrap();
 
-    let mut b = autocxx_build::Builder::new("src/lib.rs", &include_paths).build()?;
+    let nix_ver = nix_expr.version.clone();
 
-    b.flag("-std=c++2a")/* .flag("-include=/Users/jrestivo/dev/nix/config.h ") */.compile("nix-bindings");
+    let mut build = cc::Build::new();
+    build
+        .cpp(true)
+        .opt_level(2)
+        .shared_flag(true)
+        .flag("-std=c++17")
+        .add_pkg_config(nix_expr)
+        .add_pkg_config(nix_store)
+        .add_pkg_config(nix_main)
+        .cargo_metadata(false)
+        .file("plugin.cpp");
 
-    println!("cargo:rerun-if-changed=src/lib.rs");
-
-
-    for (path, name) in &include_paths_raw[1..] {
-        println!("cargo:rustc-link-search=native={path}");
-        println!("cargo:rustc-link-lib=static={name}");
+    // HACK: For some reason, rustc doesn't link libc++ on macOS by itself even
+    // though cc-rs has been told cpp(true). So we force it.
+    if cfg!(target_os = "macos") {
+        println!("cargo:rustc-link-lib=c++");
     }
+
+    let mut parts = nix_ver.split('.').map(str::parse);
+    let major: u32 = parts.next().unwrap().unwrap();
+    let minor = parts.next().unwrap().unwrap();
+
+    // TODO ask about this
+    // Indicate that we need to patch around an API change with macros
+    if (major, minor) >= (2, 4) {
+        build.define("NIX_2_4_0", None);
+    }
+    if (major, minor) >= (2, 6) {
+        build.define("NIX_2_6_0", None);
+    }
+    if (major, minor) >= (2, 9) {
+        build.define("NIX_2_9_0", None);
+    }
+
+    println!("cargo:rustc-link-lib=static:+whole-archive=nix_dap_plugin");
+    println!(
+        "cargo:rustc-link-search=native={}",
+        env::var("OUT_DIR").unwrap()
+    );
+
+    build.compile("nix_dap_plugin");
 
     Ok(())
 }

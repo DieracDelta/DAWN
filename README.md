@@ -1,10 +1,10 @@
 # What is this?
 
-NDA (nix debug adapter) is a implementation of the DAP adapter for the nix debugger.
+DAWN (Debug Adapter with Nix) is an implementation of the DAP adapter for the nix debugger.
 
 # Configuration
 
-Configuration for neovim:
+Configuration for Neovim:
 
 ```lua
 -- configure the dap adapter
@@ -24,3 +24,9 @@ dap.configurations.nix = {
     program = "$${file}",
 }
 ```
+
+# Thanks
+
+*Massive* thanks to https://github.com/lf-. The `nix-bindings` crate is entirely based on their https://github.com/lf-/nix-otel project, and as it currently stands is basically a copy paste of their code here: https://github.com/lf-/nix-dap-demo-stuff. They spent several hours working through setting up a nix plugin (nontrivial) and explaining their code to me.
+
+Thanks to the Hiro Systems team, who maintains the debug adapter infrastructure is heavily used by the dap-server crate.

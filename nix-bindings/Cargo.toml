@@ -13,11 +13,16 @@ keywords = ["nix", "bindings", "cpp", "cxx"]
 categories = ["development-tools::debugging"]
 exclude = ["target_dirs", ".github"]
 
-[dependencies]
-autocxx = "0.25.0"
-cxx = "1.0.93"
+# [dependencies]
+# autocxx = "0.25.0"
+# cxx = "1.0.93"
+
+[lib]
+crate_type = ["cdylib"]
+test = false
 
 [build-dependencies]
-autocxx-build = "0.25.0"
-miette = { version = "5.6.0", features = ["fancy"] }
-
+cc = "1.0.79"
+pkg-config = "0.3.27"
+cbindgen = "0.24.5"
+miette = { version = "5.10.0", features = ["fancy"] }

@@ -18,7 +18,6 @@ tracing = "0.1.37"
 tracing-subscriber = "0.3.16"
 snafu = "0.7.4"
 debug_types = "1.0.0"
-# clarity-repl = { git = "https://github.com/DieracDelta/clarinet.git", branch = "jr/public_dap_mod" }
 tokio-util = { version = "0.7.7", features = ["codec"]}
 futures = { version = "0.3.26"}
 async-trait = "0.1.65"
