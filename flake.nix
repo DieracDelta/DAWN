@@ -16,7 +16,7 @@
   outputs = inputs@{ self, nixpkgs, utils, fenix, nix-release }:
     utils.lib.eachDefaultSystem (system:
     let
-        fenixStable = fenix.packages.${system}.latest.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" "llvm-tools-preview" ];
+        fenixStable = fenix.packages.${system}.stable.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" "llvm-tools-preview" ];
         overlaid = final: prev:
           {
             rustc = fenixStable;
