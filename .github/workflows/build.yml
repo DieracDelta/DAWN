@@ -7,13 +7,13 @@ on:
 
 jobs:
   builds:
-    name: Test tree-sitter grammar
+    name: Build, test, lint project
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.3.4
       with:
         fetch-depth: 0 # Nix Flakes doesn't work on shallow clones
-    - uses: cachix/install-nix-action@v18
+    - uses: cachix/install-nix-action@v22
       with:
         extra_nix_config: |
           experimental-features = nix-command flakes
