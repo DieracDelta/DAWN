@@ -25,8 +25,22 @@ dap.configurations.nix = {
 }
 ```
 
+# Usage
+
+No usage yet, still WIP.
+
+To test:
+
+on m1 mbp
+
+```
+nix --option plugin-files ./target_dirs/nix_rustc/debug/libnix_bindings.dylib repl
+```
+
+will print out hello world
+
 # Thanks
 
-*Massive* thanks to https://github.com/lf-. The `nix-bindings` crate is entirely based on their https://github.com/lf-/nix-otel project, and as it currently stands is basically a copy paste of their code here: https://github.com/lf-/nix-dap-demo-stuff. They spent several hours working through setting up a nix plugin (nontrivial) and explaining their code to me.
+*Massive* thanks to https://github.com/lf-. The `nix-bindings` crate is entirely based on their https://github.com/lf-/nix-otel project, and as it currently stands is basically a copy and paste of their code here: https://github.com/lf-/nix-dap-demo-stuff. They spent several hours working through setting up a nix plugin (nontrivial) and explaining their code to me.
 
 Thanks to the Hiro Systems team, who maintains the debug adapter infrastructure is heavily used by the dap-server crate.

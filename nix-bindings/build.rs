@@ -16,6 +16,12 @@ impl AddPkg for cc::Build {
         for p in pkg.libs.into_iter() {
             self.flag(&format!("-l{}", p));
         }
+        for p in pkg.framework_paths.into_iter() {
+            self.flag(&format!("-F{:?}", p));
+        }
+        for p in pkg.frameworks.into_iter() {
+            self.flag(&format!("-framework {}", p));
+        }
         self
     }
 }
@@ -51,7 +57,7 @@ fn main() -> miette::Result<()> {
         .cpp(true)
         .opt_level(2)
         .shared_flag(true)
-        .flag("-std=c++17")
+        .flag("-std=c++20")
         .add_pkg_config(nix_expr)
         .add_pkg_config(nix_store)
         .add_pkg_config(nix_main)
@@ -85,6 +91,8 @@ fn main() -> miette::Result<()> {
         "cargo:rustc-link-search=native={}",
         env::var("OUT_DIR").unwrap()
     );
+    // panic!("BUILD IS {:#?}", build);
+
 
     build.compile("nix_dap_plugin");
 

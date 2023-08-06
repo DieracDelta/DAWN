@@ -1,16 +1,16 @@
 [package]
 name = "dap-server"
-license-file = "LICENSE"
-version = "0.1.0"
-edition = "2021"
 description = "DAP server-side implementation infra"
-rust-version = "1.67.1"
-authors = [ "Justin Restivo <justin.p.restivo@gmail.com>" ]
-readme = "README.md"
-repository = "https://github.com/DieracDelta/nix-debug-adapter"
-keywords = ["nix", "dap", "debugger", "adapter"]
-categories = ["development-tools::debugging"]
-exclude = ["target_dirs", ".github"]
+version = { workspace = true }
+edition = { workspace = true }
+rust-version = { workspace = true }
+authors =  { workspace = true }
+license-file =  { workspace = true }
+readme =  { workspace = true }
+repository =  { workspace = true }
+keywords =  { workspace = true }
+categories =  { workspace = true }
+exclude =  { workspace = true }
 
 [dependencies]
 tokio = {version = "1.26.0", default-features = false, features = [ "full" ] }

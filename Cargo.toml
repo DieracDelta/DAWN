@@ -1,10 +1,31 @@
 [workspace]
-resolver = "2"
 members = [
         "nix-bindings",
         "nix-debug-adapter",
         "dap-server",
 ]
+resolver = "2"
+edition = 2021
+rust-version = "1.73.0"
+authors = [ "Justin Restivo (justin.p.restivo@gmail.com)"]
+license-file = "LICENSE"
+readme = "README.md"
+repository = "https://github.com/DieracDelta/DAWN"
+keywords = ["nix", "dap", "debugger", "adapter", "dawn"]
+categories = ["development-tools::debugging"]
+exclude = ["target_dirs", ".github"]
+
+[workspace.package]
+rust-version = "1.73.0"
+edition = "2021"
+version = "0.1.0"
+exclude = ["target_dirs", ".github"]
+authors = [ "Justin Restivo (justin.p.restivo@gmail.com)"]
+license-file = "LICENSE"
+readme = "README.md"
+repository = "https://github.com/DieracDelta/DAWN"
+keywords = ["nix", "dap", "debugger", "adapter", "dawn"]
+categories = ["development-tools::debugging"]
 
 [profile.release]
 incremental = true

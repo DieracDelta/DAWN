@@ -1,21 +1,16 @@
 [package]
 name = "nix-bindings"
-license-file = "LICENSE"
-version = "0.1.0"
-edition = "2021"
 description = "Nix library bindings"
-rust-version = "1.67.1"
-authors = [ "Justin Restivo <justin.p.restivo@gmail.com>" ]
-readme = "README.md"
-repository = "https://github.com/DieracDelta/nix-debug-adapter"
-keywords = ["nix", "bindings", "cpp", "cxx"]
-# TDOO this is wrong
-categories = ["development-tools::debugging"]
-exclude = ["target_dirs", ".github"]
-
-# [dependencies]
-# autocxx = "0.25.0"
-# cxx = "1.0.93"
+version = { workspace = true }
+edition = { workspace = true }
+rust-version = { workspace = true }
+authors =  { workspace = true }
+license-file =  { workspace = true }
+readme =  { workspace = true }
+repository =  { workspace = true }
+keywords =  { workspace = true }
+categories =  { workspace = true }
+exclude =  { workspace = true }
 
 [lib]
 crate_type = ["cdylib"]

@@ -1,15 +1,15 @@
+#include <nix/config.h>
+#include <nix/eval-inline.hh>
+#include <nix/eval.hh>
+#include <nix/globals.hh>
+#include <nix/primops.hh>
 #include <algorithm>
 #include<iostream>
-#include <nix/config.h>
 #include <dlfcn.h>
-#include <eval-inline.hh>
-#include <eval.hh>
-#include <globals.hh>
 #include <iostream>
 #include <iterator>
 #include <optional>
 #include <ostream>
-#include <primops.hh>
 #include <string_view>
 
 #if HAVE_BOEHMGC
@@ -27,6 +27,8 @@ static void myDebugRepl(ref<EvalState> state, const ValMap &vs) {
   //
 }
 
+extern "C" void discourage_linker_from_discarding() {}
+
 static void enable_dap(EvalState &state, const PosIdx pos, Value **args,
                        Value &v) {
   state.debugRepl = myDebugRepl;
@@ -39,13 +41,15 @@ class PluginInstance {
 public:
   // constructor
   PluginInstance()
-      : primop({
+      :
+        primop({
             .name = "enable-dap",
             .args = {},
             .doc = "lol",
             .fun = enable_dap,
             .experimentalFeature = {},
-        }) {
+        })
+  {
     context = initialize_plugin();
   }
 
