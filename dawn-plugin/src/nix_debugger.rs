@@ -7,7 +7,7 @@ use debug_types::{
 };
 use either::Either;
 
-use dap_server::debugger::{Client, DebugAdapter, State};
+use dawn_infra::debugger::{Client, DebugAdapter, State};
 use debug_types::requests::RequestCommand::{
     BreakpointLocations, ConfigurationDone, Disconnect, Initialize, Launch,
 };

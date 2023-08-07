@@ -48,15 +48,18 @@ fn main() -> miette::Result<()> {
 
     let mut build = cc::Build::new();
     build
-        .cpp(true)
         .opt_level(2)
+        // .flag("-lc++abi")
+        .cpp(true)
         .shared_flag(true)
         .flag("-std=c++20")
+         .cpp_set_stdlib("c++")
         .add_pkg_config(nix_expr)
         .add_pkg_config(nix_store)
         .add_pkg_config(nix_main)
         .cargo_metadata(false)
-        .file("plugin.cpp");
+        .file("plugin.cpp")
+        ;
 
     // HACK: For some reason, rustc doesn't link libc++ on macOS by itself even
     // though cc-rs has been told cpp(true). So we force it.

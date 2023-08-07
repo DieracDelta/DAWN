@@ -36,19 +36,19 @@ static void enable_dap(EvalState &state, const PosIdx pos, Value **args,
 
 class PluginInstance {
   Context *context;
-  RegisterPrimOp primop;
+  // RegisterPrimOp primop;
 
 public:
   // constructor
   PluginInstance()
-      :
-        primop({
-            .name = "enable-dap",
-            .args = {},
-            .doc = "lol",
-            .fun = enable_dap,
-            .experimentalFeature = {},
-        })
+      // :
+        // primop({
+        //     .name = "enable-dap",
+        //     .args = {},
+        //     .doc = "lol",
+        //     .fun = enable_dap,
+        //     .experimentalFeature = {},
+        // })
   {
     context = initialize_plugin();
   }
@@ -56,6 +56,13 @@ public:
   // destructor
   ~PluginInstance() { deinitialize_plugin(context); }
 };
+
+    // addFlag({
+    //     .longName = "debugger",
+    //     .description = "Start an interactive environment if evaluation fails.",
+    //     .category = MixEvalArgs::category,
+    //     .handler = {&startReplOnEvalErrors, true},
+    // });
 
 // global variable that will be initialized when the plugin is dl-open-ed
 PluginInstance x{};

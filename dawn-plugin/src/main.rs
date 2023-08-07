@@ -9,8 +9,8 @@
 #![allow(clippy::unused_async, clippy::module_name_repetitions)]
 //! nix debugger implementation
 
-use dap_server::codec::DebugAdapterCodec;
-use dap_server::debugger::{Client, DebugAdapter, State};
+use dawn_infra::codec::DebugAdapterCodec;
+use dawn_infra::debugger::{Client, DebugAdapter, State};
 use debug_types::ProtocolMessage;
 use nix_debugger::{NixDebugAdapter, NixDebugState};
 use tokio_util::codec::{FramedRead, FramedWrite};

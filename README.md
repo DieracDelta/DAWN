@@ -52,6 +52,8 @@ will print out hello world
 - Figure out how to communicate (e.g. which port, etc). It might be possible to do over stdin/stdout, but likely would need to check.
 - Figure out how to get stuff out of nix.
 
+- Add debugger flag
+- initialize a NixRepl in a sensible enough way
 
 # Thanks
 
