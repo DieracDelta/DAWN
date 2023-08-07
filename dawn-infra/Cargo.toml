@@ -1,6 +1,6 @@
 [package]
-name = "nix-debug-adapter"
-description = "Nix Debug Adapter Implementation (DAP)"
+name = "dawn-infra"
+description = "DAP server-side implementation infra"
 version = { workspace = true }
 edition = { workspace = true }
 rust-version = { workspace = true }
@@ -34,7 +34,5 @@ either = "1.8.1"
 
 tower-lsp = { version = "0.19.0" }
 tower-service = "0.3.2"
-
-dap-server = { path = "../dap-server" }
 
 atomic_enum = "0.2.0"

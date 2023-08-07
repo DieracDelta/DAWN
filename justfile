@@ -6,7 +6,10 @@ build:
 
 build_bindings:
   echo Building nix dap adapter..
-  cargo build --release --package nix-bindings
+  cargo build --release --package dawn-bindings
+
+run_plugin_mbp:
+  nix --option plugin-files ./target_dirs/nix_rustc/debug/libnix_bindings.dylib repl
 
 test:
   echo Testing nix dap adapter...

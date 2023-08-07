@@ -13,6 +13,6 @@ Context *initialize_plugin();
 /// SAFETY:
 /// The invariant that "cx" is exclusively available here is maintained by the
 /// other side of the FFI. Beware.
-void deinitialize_plugin(Context *cx);
+void deinitialize_plugin(Context *_cx);
 
 } // extern "C"

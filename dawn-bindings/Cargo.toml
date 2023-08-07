@@ -1,6 +1,6 @@
 [package]
-name = "nix-bindings"
-description = "Nix library bindings"
+name = "dawn-bindings"
+description = "Nix bindings to initialize plugin"
 version = { workspace = true }
 edition = { workspace = true }
 rust-version = { workspace = true }

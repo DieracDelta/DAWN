@@ -9,6 +9,6 @@ pub extern "C" fn initialize_plugin() -> *mut Context {
 /// The invariant that "cx" is exclusively available here is maintained by the
 /// other side of the FFI. Beware.
 #[no_mangle]
-pub extern "C" fn deinitialize_plugin(cx: &mut Context) {
+pub extern "C" fn deinitialize_plugin(_cx: &mut Context) {
     println!("HELLO WORLD FROM RUST!\n");
 }

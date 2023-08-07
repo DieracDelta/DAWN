@@ -1,8 +1,8 @@
 [workspace]
 members = [
-        "nix-bindings",
-        "nix-debug-adapter",
-        "dap-server",
+        "dawn-bindings",
+        "dawn-plugin",
+        "dawn-infra",
 ]
 resolver = "2"
 exclude = ["target_dirs", ".github"]
@@ -11,7 +11,7 @@ exclude = ["target_dirs", ".github"]
 rust-version = "1.71.0"
 edition = "2021"
 version = "0.1.0"
-exclude = ["target_dirs", ".github"]
+exclude = ["target_dirs", ".github", "target"]
 authors = [ "Justin Restivo (justin.p.restivo@gmail.com)"]
 license-file = "LICENSE"
 readme = "README.md"
