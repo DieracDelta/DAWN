@@ -100,7 +100,6 @@ impl Client {
         self.state.load(Relaxed)
     }
 
-
     // TODO get send_response and send_event
 
     /// send event to client (only possible way)

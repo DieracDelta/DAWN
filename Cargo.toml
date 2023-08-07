@@ -5,14 +5,6 @@ members = [
         "dap-server",
 ]
 resolver = "2"
-edition = 2021
-rust-version = "1.71.0"
-authors = [ "Justin Restivo (justin.p.restivo@gmail.com)"]
-license-file = "LICENSE"
-readme = "README.md"
-repository = "https://github.com/DieracDelta/DAWN"
-keywords = ["nix", "dap", "debugger", "adapter", "dawn"]
-categories = ["development-tools::debugging"]
 exclude = ["target_dirs", ".github"]
 
 [workspace.package]

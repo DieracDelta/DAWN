@@ -11,5 +11,4 @@ pub extern "C" fn initialize_plugin() -> *mut Context {
 #[no_mangle]
 pub extern "C" fn deinitialize_plugin(cx: &mut Context) {
     println!("HELLO WORLD FROM RUST!\n");
-
 }

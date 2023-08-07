@@ -1,9 +1,7 @@
 use async_trait::async_trait;
 use debug_types::{
     events::EventBody,
-    requests::{
-        BreakpointLocationsArguments, InitializeRequestArguments, LaunchRequestArguments,
-    },
+    requests::{BreakpointLocationsArguments, InitializeRequestArguments, LaunchRequestArguments},
     responses::{BreakpointLocationsResponse, InitializeResponse, Response, ResponseBody},
     types::{BreakpointLocation, Capabilities},
 };
@@ -118,20 +116,16 @@ impl NixDebugAdapter {
             return;
         };
 
-
-
-
         // error!("launch args: {args:?}");
         // TODO some argument checking I think
-        self.client.send(
-            Either::Right(
-                Response {
-                    request_seq: seq,
-                    success: true,
-                    message: None,
-                    body: Some(ResponseBody::Launch),
-                }
-            )).await;
+        self.client
+            .send(Either::Right(Response {
+                request_seq: seq,
+                success: true,
+                message: None,
+                body: Some(ResponseBody::Launch),
+            }))
+            .await;
     }
 
     /// handle disconnect request

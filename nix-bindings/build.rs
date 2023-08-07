@@ -1,4 +1,4 @@
-use std::{path::PathBuf, env};
+use std::{env, path::PathBuf};
 
 extern crate cbindgen;
 
@@ -15,12 +15,6 @@ impl AddPkg for cc::Build {
         }
         for p in pkg.libs.into_iter() {
             self.flag(&format!("-l{}", p));
-        }
-        for p in pkg.framework_paths.into_iter() {
-            self.flag(&format!("-F{:?}", p));
-        }
-        for p in pkg.frameworks.into_iter() {
-            self.flag(&format!("-framework {}", p));
         }
         self
     }
@@ -91,8 +85,6 @@ fn main() -> miette::Result<()> {
         "cargo:rustc-link-search=native={}",
         env::var("OUT_DIR").unwrap()
     );
-    // panic!("BUILD IS {:#?}", build);
-
 
     build.compile("nix_dap_plugin");
 
