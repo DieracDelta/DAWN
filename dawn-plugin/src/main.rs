@@ -15,6 +15,7 @@ use debug_types::ProtocolMessage;
 use nix_debugger::{NixDebugAdapter, NixDebugState};
 use tokio_util::codec::{FramedRead, FramedWrite};
 use tracing::error;
+
 ///! debugger
 pub mod nix_debugger;
 

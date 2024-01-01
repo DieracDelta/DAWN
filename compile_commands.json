@@ -1,0 +1,37 @@
+[
+  {
+    "arguments": [
+      "/nix/store/3gz297am1parf7xr1j7vkhx82vx143vv-clang-wrapper-11.1.0/bin/clang++",
+      "-O2",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-fPIC",
+      "-gdwarf-2",
+      "-fno-omit-frame-pointer",
+      "-arch",
+      "arm64",
+      "-stdlib=libc++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++20",
+      "-isystem",
+      "/nix/store/1r1j5n4ja7bg7lgwiqzr8hd47mjciqc4-nix-2.19.2-dev/include/nix",
+      "-isystem",
+      "/nix/store/w393wyn9cmw6hzsnfj4k25ffb433an12-boehm-gc-8.2.2-dev/include",
+      "-isystem",
+      "/nix/store/1r1j5n4ja7bg7lgwiqzr8hd47mjciqc4-nix-2.19.2-dev/include/nix",
+      "-isystem",
+      "/nix/store/1r1j5n4ja7bg7lgwiqzr8hd47mjciqc4-nix-2.19.2-dev/include/nix",
+      "-DNIX_2_4_0",
+      "-DNIX_2_6_0",
+      "-DNIX_2_9_0",
+      "-c",
+      "-o",
+      "/Users/jrestivo/dev/dawn/target_dirs/nix_rustc/debug/build/dawn-bindings-b497435e10cda334/out/plugin.o",
+      "plugin.cpp"
+    ],
+    "directory": "/Users/jrestivo/dev/dawn/dawn-bindings",
+    "file": "/Users/jrestivo/dev/dawn/dawn-bindings/plugin.cpp",
+    "output": "/Users/jrestivo/dev/dawn/target_dirs/nix_rustc/debug/build/dawn-bindings-b497435e10cda334/out/plugin.o"
+  }
+]

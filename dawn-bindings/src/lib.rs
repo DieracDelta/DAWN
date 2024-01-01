@@ -2,6 +2,7 @@ pub struct Context {}
 
 #[no_mangle]
 pub extern "C" fn initialize_plugin() -> *mut Context {
+    println!("We initialized debugging context");
     Box::into_raw(Box::new(Context {}))
 }
 

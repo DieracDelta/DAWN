@@ -17,7 +17,7 @@ crate_type = ["cdylib"]
 test = false
 
 [build-dependencies]
-cc = "1.0.79"
-pkg-config = "0.3.27"
-cbindgen = "0.24.5"
+cc = "1.0.83"
+pkg-config = "0.3.28"
+cbindgen = "0.26.0"
 miette = { version = "5.10.0", features = ["fancy"] }

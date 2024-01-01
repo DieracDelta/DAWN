@@ -13,26 +13,26 @@ categories =  { workspace = true }
 exclude =  { workspace = true }
 
 [dependencies]
-tokio = {version = "1.26.0", default-features = false, features = [ "full" ] }
-tracing = "0.1.37"
-tracing-subscriber = "0.3.16"
-snafu = "0.7.4"
+tokio = {version = "1.35.1", default-features = false, features = [ "full" ] }
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+snafu = "0.8.0"
 debug_types = "1.0.0"
-tokio-util = { version = "0.7.7", features = ["codec"]}
-futures = { version = "0.3.26"}
-async-trait = "0.1.65"
+tokio-util = { version = "0.7.10", features = ["codec"]}
+futures = { version = "0.3.30"}
+async-trait = "0.1.76"
 
 
-serde = { version = "1.0", features = ["derive"] }
-serde_json = { version = "1.0.47", features = ["unbounded_depth"] }
-bytes = { version = "1.4.0"}
-memchr = { version = "2.5.0"}
+serde = { version = "1.0.193", features = ["derive"] }
+serde_json = { version = "1.0.108", features = ["unbounded_depth"] }
+bytes = { version = "1.5.0"}
+memchr = { version = "2.7.1"}
 httparse = { version = "1.8.0"}
 nll = { git = "https://github.com/EspressoSystems/nll" }
-futures-util = { version = "0.3.26"}
-either = "1.8.1"
+futures-util = { version = "0.3.30"}
+either = "1.9.0"
 
-tower-lsp = { version = "0.19.0" }
+tower-lsp = { version = "0.20.0" }
 tower-service = "0.3.2"
 
 atomic_enum = "0.2.0"

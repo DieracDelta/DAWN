@@ -8,7 +8,7 @@ resolver = "2"
 exclude = ["target_dirs", ".github"]
 
 [workspace.package]
-rust-version = "1.71.0"
+rust-version = "1.75.0"
 edition = "2021"
 version = "0.1.0"
 exclude = ["target_dirs", ".github", "target"]

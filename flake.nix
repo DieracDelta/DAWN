@@ -9,19 +9,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-release = {
-      url = "github:NixOS/nix?ref=2.17.0";
+      url = "github:NixOS/nix?ref=2.19.2";
+    };
+    bear-fix = {
+      url = "github:emilazy/nixpkgs/fix-bear";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, utils, fenix, nix-release }:
+  outputs = inputs@{ self, nixpkgs, utils, fenix, nix-release, bear-fix }:
     utils.lib.eachDefaultSystem (system:
     let
         fenixStable = fenix.packages.${system}.stable.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" "llvm-tools-preview" ];
         overlaid = final: prev:
           {
-            rustc = fenixStable;
-            cargo = fenixStable;
-            rust-src = fenixStable;
+            # rustc = fenixStable;
+            # cargo = fenixStable;
+            # rust-src = fenixStable;
             nix = nix-release.packages.${system}.nix-clang11Stdenv;
           };
         pkgs = import nixpkgs {
@@ -40,17 +43,18 @@
             RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
             buildInputs =
               with pkgs; [
-                rust-src
+                # rust-src
                 pkg-config
                 fenixStable
                 fenix.packages.${system}.rust-analyzer
                 just
                 cargo-expand
-                cargo
-                rustc
+                # cargo
+                # rustc
                 nix
                 nix.dev
-                bear
+                bear-fix.legacyPackages.${system}.bear
+                # bear
                 rust-cbindgen # for executable cbindgen
                 clang-tools_15 # for up to date clangd
                 clang_11
